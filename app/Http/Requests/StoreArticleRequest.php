@@ -29,7 +29,9 @@ class StoreArticleRequest extends FormRequest
         return [
             'title' => ['required', 'max:255'],
             'description' => ['required', 'max:255'],
-            'body' => ['required']
+            'body' => ['required'],
+            'tagList' => ['sometimes', 'array'],
+            'tagList.*' => ['sometimes', 'string', 'max:255']
         ];
     }
 }

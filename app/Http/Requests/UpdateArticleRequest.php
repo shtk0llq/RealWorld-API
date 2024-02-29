@@ -29,7 +29,9 @@ class UpdateArticleRequest extends FormRequest
         return [
             'title' => ['required_without_all:body,description'],
             'description' => ['required_without_all:title,body'],
-            'body' => ['required_without_all:title,description']
+            'body' => ['required_without_all:title,description'],
+            'tagList' => ['sometimes', 'array'],
+            'tagList.*' => ['sometimes', 'string', 'max:255']
         ];
     }
 }

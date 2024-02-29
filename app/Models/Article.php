@@ -15,6 +15,21 @@ class Article extends Model
 
     public function tags(): BelongsToMany
     {
-        return $this->belongsToMany(Tag::class);
+        return $this->belongsToMany(Tag::class)->withTimestamps();
+    }
+
+    public function syncTags(array $tags):void
+    {
+        $tagsId = [];
+
+        foreach($tags as $tagName) {
+            $tag = Tag::firstOrCreate([
+                'name' => $tagName
+            ]);
+
+            $tagsId[] = $tag->id;
+        }
+
+        $this->tags()->sync($tagsId);
     }
 }

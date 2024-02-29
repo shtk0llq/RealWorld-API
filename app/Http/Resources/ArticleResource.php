@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use App\Http\Resources\TagCollection;
 
 class ArticleResource extends JsonResource
 {
@@ -22,13 +23,13 @@ class ArticleResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            "slug" => $this->slug,
-            "title" => $this->title,
-            "description" => $this->description,
-            "body" => $this->body,
-            // "tagList" => ["dragons", "training"],
-            "created_at" => $this->created_at,
-            "updated_at" => $this->updated_at
+            "slug" => $this->resource->slug,
+            "title" => $this->resource->title,
+            "description" => $this->resource->description,
+            "body" => $this->resource->body,
+            "tagList" => new TagCollection($this->resource->tags),
+            "created_at" => $this->resource->created_at,
+            "updated_at" => $this->resource->updated_at
         ];
     }
 }

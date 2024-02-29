@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Illuminate\Support\Arr;
 use App\Models\Article;
 use App\Http\Requests\StoreArticleRequest;
 use App\Http\Requests\UpdateArticleRequest;
@@ -23,9 +24,14 @@ class ArticleController extends Controller
     {
         $validated = $request->validated();
         $validated['slug'] = Str::slug($validated['title'], '-');
+        $tags = Arr::pull($validated, 'tagList');
 
         $article = Article::create($validated);
-
+        
+        if (is_array($tags)) {
+            $article->syncTags($tags);
+        }
+        
         return new ArticleResource($article);
     }
 
@@ -39,6 +45,7 @@ class ArticleController extends Controller
     public function update(UpdateArticleRequest $request, string $slug)
     {
         $validated = $request->validated();
+        $tags = Arr::pull($validated, 'tagList');
         
         if (isset($validated['title'])) {
             $validated['slug'] = Str::slug($validated['title'], '-');        
@@ -46,6 +53,10 @@ class ArticleController extends Controller
 
         $article = Article::where('slug', $slug)->firstOrFail();
         $article->update($validated);
+
+        if (is_array($tags)) {
+            $article->syncTags($tags);
+        }
 
         return new ArticleResource($article);
     }
